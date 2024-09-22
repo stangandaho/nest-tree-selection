@@ -1,11 +1,4 @@
----
-pdf_document: default
-author: "By **Stanislas Mahussi Gandaho**"
-date: "2024-22-09"
-output:
-  pdf_document: default
-title: '**_Nest tree selection by White-backed Vultures (Gyps africanus) in South Africa_**'
----
+# Nest tree selection by White-backed Vultures (Gyps africanus) in South Africa
 
 
 This readme file provides necessary description of data representation and data analysis file structure. We explain some R script file for general understanding. The aim is not to explain every single line code.
@@ -59,4 +52,4 @@ It is in the `scripts` folder we have all R code wrote for data processing, anal
 
 
 ## 7. Tables
-The `tables` folder contains some analysis output in table format such as density surface model, density surface model prediction, Dunn post hoc test, and Kruskall-Wallis test.  
+The `tables` folder contains some analysis output in table format such as Dunn post hoc test, and Kruskall-Wallis test.  
