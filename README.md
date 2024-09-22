@@ -9,28 +9,15 @@ The analysis project is organized into different directories (folders), includin
 This folder has main data collected and generated for data analysis. About data collected in the field, we have *Kempiana_ERAIFT_Tree_Data.xlsx* file and *Manyeleti_ERAIFT_Tree_Data.xlsx* on kempiana and Manyeleti respectively. The first one has different sheet that indicate the date of record. The second sheet in the second file represent the rest of the first file. The structure of both files differ because of data gathering by different group.  
 The datasets include detailed information on various tree attributes. Each tree is uniquely identified by a "Tree no" and assessed for vulture presence. Key characteristics recorded include tree species, height (measured with two stacked poles of 8m), circumference at breast height (CBH1 and CBH2), canopy width (taken with type measuring), and number of stems. Health indicators such as debarking, insect damage, fire damage, and fungus presence are noted, alongside GPS coordinates. The damage were recorded on for level; 0 indicating no damage, 1 for light, 2 for medium and 3 for high damage. Additional descriptive notes provide context on the tree's environment or any unique observations.  
 
-The `data` directory has some subdirectories such as:  
 
-* **`aoi`** (area of interest) that has all geographic information data (roads, waterway, area of study boundary, etc. in ESRI shape file format) we needed to present the area of study. To design a complete map, we used a complementary data on South Africa (for example to add ZA miniature). Due to the size of this file, we prefer to don't include in the project resource. Therefore, it can be downloaded [here](http://download.geofabrik.de/africa/south-africa-latest-free.shp.zip). Additionally, the directory contains *grid* shape file of 200x200m, that was generated for the second specific objective analysis (distance sampling application).  
-
-* **`density_data`** contains *bloc* shape file created and used to split the unhealthy tree in cluster. This allowed to compute the distance of unhealthy tree to waterway inside corresponding bloc. Doing that, we avoid to compute the distance of every unhealthy tree to all waterway. The *distance_and_envar.csv* contains the identifier (id) of each grid of 200x200m, the distance of tree inside the grid and near waterway, the number of tree per grid (size), and the total walking distance along waterway (effort) and environment covariates (Normalized Difference Vegetation Index, Distance to Near Water, Distance to Near Road, Land Use Land Cover Class, Digital Terrain Model, and Digital Surface Model). The and and *distance.csv* represent the standard dataset required by distance sampling approach. It has the identifier (id) of each grid of 200x200m, the distance of tree inside the grid and near waterway (distance needed), and the number of tree per grid (size). The *seg_data* table has the sample identifiers which define the segments, the corresponding effort (waterway length) expended and the environmental covariates that will be used to model abundance/density. *obs_data* provides a link table between the observations used in the detection function and the samples (segments). The shape file of *unhealthy_tree* and *grid_with_unh_tree* hold the geographical representation of unhealthy across their corresponding grid respectively.  
-
-* **`tracks`** includes the tracking for several date during the surveys. The date a beginning of each file name represent the date at which the data were recorded.  
-
-## 2. Documents
-The `documents` directory contains some document used in parallel during the data analysis. The article or book inside consist of the complement for literature review. These material cover Spatial Data Analysis, Spatial models for distance sampling data: recent developments and future directions, Distance Sampling:
-Methods and Applications, and A Literature Review Of Computer Vision Techniques In Wildlife Monitoring.
-
-## 3. Fonts
+## 2. Fonts
 Inside this directory is Montserrat font used to customize font of graphic designed in R.  
 
-## 4. Images
-The images folder contains all images created or taken in the field and used in the thesis during the writing or in the presentation for defending.  
 
-## 5. Plots
+## 3. Plots
 The `plots` directory holds the data visualization output.  
 
-## 6. Scripts
+## 4. Scripts
 It is in the `scripts` folder we have all R code wrote for data processing, analysis and visualization. The prefix digit represents the order of the script in analysis workflow (e.g '3' means the script for third analysis).
 
 
@@ -51,5 +38,5 @@ It is in the `scripts` folder we have all R code wrote for data processing, anal
 * `4_Kruskall_Wallis_tree_parameter_vulture_presence.R`: Investigates the association between tree characteristics (Height, CBH1, CBH2, and Canopy width) and vulture presence. The script checks the normality of the tree characteristics and finds that none follow a normal distribution. Consequently, it performs Kruskal-Wallis tests for each characteristic, assessing their association with vulture presence, and stores the results in a CSV file. For variables where the Kruskal-Wallis test is significant, post hoc Dunn tests are conducted. The results are visualized using box plots with significant differences annotated, and the plots are saved as JPEG files. Finally, the script saves the significant Dunn test results in another CSV file.  
 
 
-## 7. Tables
+## 5. Tables
 The `tables` folder contains some analysis output in table format such as Dunn post hoc test, and Kruskall-Wallis test.  
