@@ -60,6 +60,11 @@ write.csv(kt_all, "tables/health_status_kuskall_test.csv", row.names = F, fileEn
 dep_tb <- survey_data %>% 
   select(vulture_presence, health_level) %>% 
   table() %>% 
-  fisher.test()
+  chisq.test()
+
+rcompanion::cramerV(survey_data %>% 
+                       select(vulture_presence, health_level) %>% 
+                       table(), ci = TRUE)
+
 # RESULT
-# p-value = 0.3465 so there is no association between vulture and tree health
+# p-value = 0.4688 so there is no association between vulture and tree health

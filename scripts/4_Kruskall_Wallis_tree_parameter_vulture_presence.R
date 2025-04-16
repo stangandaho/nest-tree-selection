@@ -1,12 +1,13 @@
 # Import data
 library(dplyr)
-library(rstatix)
+library(ggplot2)
+#library(rstatix)
 library(showtext)
+source("scripts/utils.R")
 
 survey_data <- read.csv(file = "data/survey_data.csv") %>% 
   mutate(CBH1 = CBH1/100, CBH2 = CBH2/100) %>% 
   rename(`Canopy width` = Canopy.width, Height = Heigth)
-
 # Test if vulture presence is associated to characteristics (Heigth, CBH 1, 2 and Canopy width)
 tree_params <- survey_data[, c("vulture_presence", "Height", "CBH1", "CBH2", "Canopy width")] 
 
@@ -52,15 +53,15 @@ write.csv(kt_all, "tables/kuskall_test.csv", row.names = F, fileEncoding = "ISO-
 
 # Do post hoc test for which Kruskal–Wallis test is significative
 # Select only variable for which Kruskal–Wallis test is significant
-sign_kt <- kt_all %>% dplyr::filter(sign != "ns") %>% pull(variable)
+sign_kt <- kt_all %>% pull(variable)
 
 ph_df <- tree_params[, c("vulture_presence", sign_kt)]
 
 # Create empty data frame to store each Dunn test output
 duntes_all <- data.frame()
 for (vr in names(ph_df[, -1])) {
-  duntest <- rstatix::dunn_test(data = ph_df, 
-                       formula = as.formula(paste0(vr, " ~ ", "vulture_presence")),
+  duntest <- dunntest(data = ph_df, 
+                       formula = as.formula(paste0("`", vr,"`", " ~ ", "vulture_presence")),
                        p.adjust.method = "bonferroni", detailed = T) %>% 
     mutate(max_m = max(ph_df[[vr]], na.rm = T)-0.5)
   duntes_all <- rbind(duntes_all, duntest)
@@ -81,25 +82,26 @@ duntes_boxplot <- duntes_all %>%
   rstatix::add_xy_position()
 
 ggpubr::ggboxplot(tree_params, x = "vulture_presence", 
-                  y = c("CBH1", "CBH2", "Height", "Canopy width"), 
+                  y = c("CBH1", "CBH2", "Height", "Canopy width"), ylab = "Measure (m)",
                   color = "#F8B195", fill = "#6C5B7B", combine = T,
                    scale = "free_y")+
-  ggpubr::stat_pvalue_manual(duntes_boxplot, hide.ns = TRUE, "y.position" = "max_m",
-                             label = "Dunn test, p = {round(p,3)} {p.adj.signif}   Estimate = {round(estimate,2)}",
+  ggpubr::stat_pvalue_manual(duntes_boxplot, hide.ns = F, "y.position" = "max_m",
+                             label = "Estimate = {round(estimate,2)} , CI = {paste0('[',round(ci_lower, 1), ' ; ', round(ci_upper, 1), ']')}, P-value = {round(p,3)}{p.adj.signif}",
                              label.size = 13, family = "mr", lineheight = 0.0)+
   theme(
-    plot.margin = margin(0,0,0,0), 
+    #plot.margin = margin(0,0,0,0), 
     panel.background = element_rect(color = "#6C5B7B", size = 3),
     panel.border = element_rect(color = NA),
-    axis.title = element_blank(), axis.text.y = element_blank(),
-    axis.ticks.y = element_blank(),
-    axis.text = element_text(hjust = 0.5, family = "mmi", size = 40, lineheight = 0.22),
+    axis.title.x = element_blank(),
+    axis.title.y = element_text(size = 45, colour = "#6C5B7B", family = "msb"),
+    axis.ticks = element_line(colour = "#6C5B7B"),
+    axis.text = element_text(hjust = 0.5, family = "mmi", size = 40, lineheight = 0.22, colour = "#6C5B7B"),
     strip.background = element_rect(fill = plt_color[1], color = plt_color[1]),
     strip.text = element_text(size = 40, family = "msb", color = "#FFFFFF")
   )
 
 # Save
-ggsave(filename = "plots/dun_test_ploxplot.jpeg", 
+ggsave(filename = "ani_con_plots/dun_test_ploxplot.tif", 
        width = 25, height = 20, units = "cm", dpi = 300)
 
 
@@ -107,3 +109,11 @@ ggsave(filename = "plots/dun_test_ploxplot.jpeg",
 duntes_all <- duntes_all %>% 
   dplyr::select(-all_of(c("estimate1", "estimate2", "method", "p.adj"))) 
 write.csv(duntes_all, "tables/dunn_test_signif.csv", row.names = F, fileEncoding = "ISO-8859-1")
+
+## Fisher exact Test
+fisher.test(x = survey_data$vulture_presence, y = survey_data$health_level)
+
+## Insect Damage and Debarking
+fisher.test(survey_data$Debarking, survey_data$Inssect.Damage)
+
+

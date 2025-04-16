@@ -1,5 +1,6 @@
 library(tidyverse)
 library(showtext)
+source("scripts/fonts_and_colors.R")
 
 # Import data
 survey_data <- read.csv(file = "data/survey_data.csv")
@@ -49,7 +50,7 @@ ggplot(data = plot_df)+
   coord_polar()
 
 # Save
-ggsave(filename = "plots/tree_species_proportion.jpeg", 
+ggsave(filename = "ani_con_plots/tree_species_proportion.tiff", 
        width = 30, height = 30, units = "cm", dpi = 300)
 
 
@@ -82,6 +83,6 @@ ggplot(data = vulpre_df, aes(x = str_wrap(scientific_name, 5), y = prop, group =
     legend.location = "plot", legend.text.position = "top", 
     legend.key.spacing.y = unit(2, "lines"), legend.box.margin = margin(r = 2, unit = "lines")
   )
-ggsave(filename = "plots/vulture_presence_per_tree.jpeg", 
+ggsave(filename = "ani_con_plots/vulture_presence_per_tree.tiff", 
        width = 40, height = 30, units = "cm", dpi = 300)
 # Proportion d'occurence des nids de White-backed Vulture d'autre nids larges sur differentes especes d'arbres sondes 

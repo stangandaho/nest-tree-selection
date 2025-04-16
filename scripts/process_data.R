@@ -57,21 +57,39 @@ char2num <- function(x, chars = c(), nums = c()){
   return(as.numeric(unlist(x_new)))
 }
 
-survey_data <- survey_data %>% 
+
+assess_tree_health <- function(x, damage_levels) {
+  x <- x[!is.na(x)]; damage_levels <- damage_levels[!is.na(damage_levels)]
+  more_than_threshold <- x >= median(damage_levels)
+ 
+  if (!any(more_than_threshold)) {
+    return("Healthy")
+  } else {
+    if (sum(more_than_threshold) > 1) {
+      return("Very unhealthy")
+    } else {
+      return("Unhealthy")
+    }
+  }
+}
+
+# Example usage
+health_status <- assess_tree_health(x = c(0, 0, 1, 2), damage_levels = 0:3)
+
+
+survey_data_c <- survey_data %>% 
   dplyr::mutate(
     across(Debarking:Fungus, ~ char2num(.x, chars = c("0.0", "0", "1.0", "L", "M", "H"), 
                                         nums = c(0, 0, 1, 1, 2, 3)))) %>%
   # Add health_level column
-  rowwise() %>% mutate(health_level = sum(across(Debarking:Fungus), na.rm = T),
-                       health_level = case_when(health_level <= 1 ~ "Healthy",
-                                                health_level > 1 & health_level <= 3 ~ "Unhealthy",
-                                                T ~ "Very unhealthy"),
-                       # Tree scientific name column
-                       scientific_name = tree_sn(`Tree species`)) %>% 
+  rowwise() %>% 
+  mutate(health_level = assess_tree_health(x = across(Debarking:Fungus), 
+                                           damage_levels = 0:3),
+         # Tree scientific name column
+         scientific_name = tree_sn(`Tree species`)) %>% 
   mutate(vulture_presence = case_when(`Vulture presence` == 0 ~ "No nest",
-                                      `Vulture presence` == 1 ~ "Large nest",
-                                      `Vulture presence` == 2 ~ "Vulture nest")) %>% 
+                                      `Vulture presence` %in% c(1,2) ~ "Vulture nest")) %>% 
   select(-`Vulture presence`) %>% 
   relocate(`Tree no`, vulture_presence, scientific_name, health_level)
 
-write.csv(x = survey_data, file = "data/survey_data.csv", row.names = F)
+write.csv(x = survey_data_c, file = "data/survey_data.csv", row.names = F)

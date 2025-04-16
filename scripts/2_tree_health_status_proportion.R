@@ -28,7 +28,7 @@ ggsave(filename = "plots/health_status_proportion.jpeg",
   
 unhealthy_tree <- survey_data %>% 
   select(health_level, scientific_name) %>% 
-  dplyr::filter(health_level == "Very unhealthy") %>% 
+  dplyr::filter(health_level %in% c("Very unhealthy")) %>% 
   group_by(scientific_name) %>% 
   summarise(number = n()) %>% 
   mutate(prop = number*100/sum(number),
